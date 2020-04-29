@@ -140,7 +140,7 @@ LL<T>::LL() {
 
 template<class T>
 LL<T>::~LL() {
-    Node<T>* curr = m_head; 
+    Node<T>* curr = m_head;
     while (curr != nullptr) {
         Node<T>* next = curr->GetNext();
         delete curr;
@@ -158,12 +158,11 @@ template<class T>
 LL<T>::LL(const LL& source) {
     m_size = source.m_size;
     Node<T>* currSource = source.m_head;
-    m_head = nullptr;
+    Node<T>* currCpy = m_head;
     if (currSource != nullptr) {
-        m_head = new Node<T>(currSource->GetData().first);
-
-        m_head->SetData(currSource->GetData());
-        Node<T>* currCpy = m_head;
+        currCpy = new Node<T>(currSource->GetData().first);
+        currCpy->SetData(currSource->GetData());
+        
         currSource = currSource->GetNext();
 
         while (currSource != nullptr) {
@@ -182,7 +181,7 @@ LL<T>::LL(const LL& source) {
             delete temp;
         }
     }
-    
+
 }
 
 // Name: operator= (Overloaded Assignment Operator)
@@ -195,47 +194,31 @@ LL<T>& LL<T>::operator=(const LL& source) {
     if (this != &source) {
         m_size = source.m_size;
         Node<T>* currSource = source.m_head;
-        Node<T>* currCpy = m_head;
-
+        Node<T>* currCpy;
+               
         if (currSource != nullptr) {
+            m_head = new Node<T>(currSource->GetData().first);
             m_head->SetData(currSource->GetData());
+            currCpy = m_head;
             currSource = currSource->GetNext();
-       
-            while (currSource != nullptr) {
 
-                // add any additional nodes 
-                // if the copy ll size is too small 
-                if (currCpy->GetNext() == nullptr) {
-                Node<T>* temp = new Node<T>;
+            while (currSource != nullptr) {
+                // create and set the next copy node 
+                Node<T>* temp = new Node<T>(currSource->GetData().first);
                 temp->SetData(currSource->GetData());
                 currCpy->SetNext(temp);
-
-                // deallocate potential floating pointers
-                temp = nullptr;
-                delete temp;
-                }
-                else {
-                    currCpy->GetNext()->SetData(currSource->GetData());
-                }
-
+                
                 // moves to the next node 
                 currCpy = currCpy->GetNext();
                 currSource = currSource->GetNext();
-                
-            }
-            currCpy = currCpy->GetNext();
-        }
 
-        // removes any nodes from curr copy that isn't
-        // located from the source linked list
-        while (currCpy != nullptr) {
-            Node<T>* next = currCpy->GetNext();
-            delete currCpy;
-            currCpy = nullptr;
-            currCpy = next;
+                // deallocate pointers
+                temp = nullptr;
+                delete temp;
+            }
         }
     }
-   
+
     return *this;
 }
 
@@ -286,7 +269,7 @@ void LL<T>::Insert(const T& key) {
         Node<T>* prev = m_head;
         bool isFound = false;
 
-        while (curr != nullptr || isFound) {
+        while (curr != nullptr && !isFound) {
             // if the new node is placed
             // in alphabetical order
             if (key < curr->GetData().first) {
@@ -301,7 +284,7 @@ void LL<T>::Insert(const T& key) {
                     getNode->SetNext(curr);
                     prev->SetNext(getNode);
                 }
-                
+
                 isFound = true;
             }
             // continue traversing 
@@ -309,7 +292,7 @@ void LL<T>::Insert(const T& key) {
                 prev = curr;
                 curr = curr->GetNext();
             }
-            
+
         }
         // end of the list
         if (!isFound) {
@@ -346,7 +329,7 @@ void LL<T>::RemoveAt(const T& keyVal) {
             prev = curr;
             curr = curr->GetNext();
         }
-    
+
     }
 }
 
@@ -358,7 +341,7 @@ void LL<T>::Display() {
     while (curr != nullptr) {
         first = curr->GetData().first;
         second = curr->GetData().second;
-        cout << first << ": " << second;
+        cout << first << ": " << second << endl;
         curr = curr->GetNext();
     }
 }
@@ -410,60 +393,65 @@ pair<T, int>& LL<T>::operator[] (int x) {
 //   3.  ./LL (try valgrind too!)
 
 
-int main () {
-  //Test 1 - Default Constructor and Push
-  cout << "Test 1 - Default Constructor and Push Running" << endl;
-  //Test Default Constructor
-  LL <string>* newLL1 = new LL<string>();
-  //Push 4 nodes into LL
-  newLL1->Insert("candy");
-  newLL1->Insert("cookies");
-  newLL1->Insert("candy");
-  newLL1->Insert("bananas");
-  newLL1->Insert("dogs");
-  newLL1->Insert("apples");
-  newLL1->Insert("elephants");
-  newLL1->Insert("barf");
-  newLL1->Insert("candy");
-  newLL1->Insert("cookies");
-  newLL1->Insert("candy");
-  newLL1->Insert("bananas");
-  newLL1->Insert("dogs");
-  newLL1->Insert("apples");
-  newLL1->Insert("elephants");
-  newLL1->Insert("barf");
-  newLL1->Display();
+int main() {
+    //Test 1 - Default Constructor and Push
+    cout << "Test 1 - Default Constructor and Push Running" << endl;
+    //Test Default Constructor
+    LL <string>* newLL1 = new LL<string>();
+    //Push 4 nodes into LL
+    newLL1->Insert("candy");
+    newLL1->Insert("cookies");
+    newLL1->Insert("candy");
+    newLL1->Insert("bananas");
+    newLL1->Insert("dogs");
+    newLL1->Insert("apples");
+    newLL1->Insert("elephants");
+    newLL1->Insert("barf");
+    newLL1->Insert("candy");
+    newLL1->Insert("cookies");
+    newLL1->Insert("candy");
+    newLL1->Insert("bananas");
+    newLL1->Insert("dogs");
+    newLL1->Insert("apples");
+    newLL1->Insert("elephants");
+    newLL1->Insert("barf");
+    newLL1->Display();
+    /*
+    //  delete newLL1;
 
-  //  delete newLL1;
-
-  //Test 2 - Copy Constructor and Assignment Operator
-  cout << "Test 2 - Copy Constructor and Assignment Operator Running" << endl;
-  //Test Copy constructor
-  LL <string>* newLL2 = new LL<string>(*newLL1);
-  cout << "*******Original*********" << endl;
-  newLL1->Display();
-  cout << "*******Copy*********" << endl;
-  newLL2->Display();
-
-  //Test Overloaded Assignment Operator
-  LL <string>* newLL3 = new LL<string>();
-  newLL3 = newLL1;
-  cout << "*******Assignment*********" << endl;
-  newLL3->Display();
-  cout << endl;
-
-  //Test 3 - Test Display and Overloaded <<
-  cout << "Test 3 - Display and Overloaded << Running" << endl;
-  cout << "newLL1 Display Function" << endl;
-  newLL1->Display();
-  cout << "newLL1 Overloaded" << endl;
-  cout << *newLL1;
-  cout << "RemoveAt(candy)" << endl;
-  newLL1->RemoveAt("candy");
-  cout << "newLL1 Display Function" << endl;
-  newLL1->Display();
-
-  return 0;
+    //Test 2 - Copy Constructor and Assignment Operator
+    cout << "Test 2 - Copy Constructor and Assignment Operator Running" << endl;
+    //Test Copy constructor
+    LL <string>* newLL2 = new LL<string>(*newLL1);
+    cout << "*******Original*********" << endl;
+    newLL1->Display();
+    cout << "*******Copy*********" << endl;
+    newLL2->Display();
+    */
+    /*
+    //Test Overloaded Assignment Operator
+    LL <string>* newLL3 = new LL<string>();
+    *newLL3 = *newLL1;
+    cout << "*******Assignment*********" << endl;
+    newLL3->Insert("barf");
+    newLL1->Display();
+    newLL3->Display();
+    cout << endl;
+    */
+    
+    // last test
+    //Test 3 - Test Display and Overloaded <<
+    cout << "Test 3 - Display and Overloaded << Running" << endl;
+    cout << "newLL1 Display Function" << endl;
+    newLL1->Display();
+    cout << "newLL1 Overloaded" << endl;
+    cout << *newLL1;
+    cout << "RemoveAt(candy)" << endl;
+    newLL1->RemoveAt("candy");
+    cout << "newLL1 Display Function" << endl;
+    newLL1->Display();
+    
+    return 0;
 }
 
 
