@@ -133,46 +133,270 @@ private:
 //Implement LL here
 
 template<class T>
-LL<T>::LL() {}
-
-template<class T>
-LL<T>::~LL() {}
-
-template<class T>
-LL<T>::LL(const LL&) {}
-
-template<class T>
-LL<T>& LL<T>::operator=(const LL&) {}
-
-template<class T>
-Node<T>* LL<T>::Find(const T& data){}
-
-template<class T>
-void LL<T>::Insert(const T& newNode) {
-
-    // If the size of the list is zero
-    // set the node to m_head 
-    
-    // Otherwise, see if you can find the node in the list
-
-    // If it is on the list, then increment the quantity 
-    // otherwise, add the new node in the list in alphabetical order
+LL<T>::LL() {
+    m_head = nullptr;
+    m_size = 0;
 }
 
 template<class T>
-void LL<T>::RemoveAt(const T&) {}
+LL<T>::~LL() {
+    Node<T>* curr = m_head; 
+    while (curr != nullptr) {
+        Node<T>* next = curr->GetNext();
+        delete curr;
+        curr = next;
+    }
+}
+
+
+// Name: LL (Copy Constructor)
+    // Desc: Creates a copy of existing LL
+    //       Requires a LL - REQUIRED to be implemented even if not used
+    // Preconditions: Source LL exists
+    // Postconditions: Copy of source LL
+template<class T>
+LL<T>::LL(const LL& source) {
+    m_size = source.m_size;
+    Node<T>* currSource = source.m_head;
+    m_head = nullptr;
+    if (currSource != nullptr) {
+        m_head = new Node<T>(currSource->GetData().first);
+
+        m_head->SetData(currSource->GetData());
+        Node<T>* currCpy = m_head;
+        currSource = currSource->GetNext();
+
+        while (currSource != nullptr) {
+            // create and set the next copy node 
+            Node<T>* temp = new Node<T>(currSource->GetData().first);
+            temp->SetData(currSource->GetData());
+            currCpy->SetNext(temp);
+
+            // moves to the next node 
+            currCpy = currCpy->GetNext();
+            currSource = currSource->GetNext();
+
+            // deallocate pointers
+            currCpy->SetNext(nullptr);
+            temp = nullptr;
+            delete temp;
+        }
+    }
+    
+}
+
+// Name: operator= (Overloaded Assignment Operator)
+    // Desc: Makes two LL of the same type have identical number of nodes and values
+    // Preconditions: Requires two linked lists of the same templated type
+    //                REQUIRED to be implemented even if not used
+    // Postconditions: Two idenetical LL
+template<class T>
+LL<T>& LL<T>::operator=(const LL& source) {
+    if (this != &source) {
+        m_size = source.m_size;
+        Node<T>* currSource = source.m_head;
+        Node<T>* currCpy = m_head;
+
+        if (currSource != nullptr) {
+            m_head->SetData(currSource->GetData());
+            currSource = currSource->GetNext();
+       
+            while (currSource != nullptr) {
+
+                // add any additional nodes 
+                // if the copy ll size is too small 
+                if (currCpy->GetNext() == nullptr) {
+                Node<T>* temp = new Node<T>;
+                temp->SetData(currSource->GetData());
+                currCpy->SetNext(temp);
+
+                // deallocate potential floating pointers
+                temp = nullptr;
+                delete temp;
+                }
+                else {
+                    currCpy->GetNext()->SetData(currSource->GetData());
+                }
+
+                // moves to the next node 
+                currCpy = currCpy->GetNext();
+                currSource = currSource->GetNext();
+                
+            }
+            currCpy = currCpy->GetNext();
+        }
+
+        // removes any nodes from curr copy that isn't
+        // located from the source linked list
+        while (currCpy != nullptr) {
+            Node<T>* next = currCpy->GetNext();
+            delete currCpy;
+            currCpy = nullptr;
+            currCpy = next;
+        }
+    }
+   
+    return *this;
+}
+
+// Name: Find
+    // Desc: Iterates through LL and returns node if data found
+    // Preconditions: LL Populated
+    // Postconditions: Returns nullptr if not found OR Node pointer if found
+template<class T>
+Node<T>* LL<T>::Find(const T& newNode) {
+    Node<T>* curr = m_head;
+    while (curr != nullptr) {
+        if (curr->GetData().first == newNode) {
+            return curr;
+        }
+        curr = curr->GetNext();
+    }
+    return nullptr;
+}
 
 template<class T>
-void LL<T>::Display() {}
+void LL<T>::Insert(const T& key) {
+    Node<T>* getNode = Find(key);
+    T first;
+    int second;
+    pair<T, int> pair;
+
+    // If the size of the list is zero
+    // set the node to m_head 
+    if (m_size == 0) {
+        getNode = new Node<T>(key);
+        m_head = getNode;
+    }
+    // See if you can find the node in the list
+    // If it is already in the list, increment the quantity 
+    else if (getNode != nullptr) {
+        first = getNode->GetData().first;
+        second = getNode->GetData().second;
+        pair = make_pair(first, ++second);
+
+        getNode->SetData(pair);
+    }
+
+    else {
+        // Add the new node in the list in alphabetical order
+        getNode = new Node<T>(key);
+
+        Node<T>* curr = m_head;
+        Node<T>* prev = m_head;
+        bool isFound = false;
+
+        while (curr != nullptr || isFound) {
+            // if the new node is placed
+            // in alphabetical order
+            if (key < curr->GetData().first) {
+                // inserting at beginning of linked list
+                // (already contains m_head)
+                if (curr == m_head) {
+                    getNode->SetNext(curr);
+                    m_head = getNode;
+                }
+                // middle of linked list
+                else {
+                    getNode->SetNext(curr);
+                    prev->SetNext(getNode);
+                }
+                
+                isFound = true;
+            }
+            // continue traversing 
+            else {
+                prev = curr;
+                curr = curr->GetNext();
+            }
+            
+        }
+        // end of the list
+        if (!isFound) {
+            prev->SetNext(getNode);
+        }
+    }
+    m_size++;
+}
 
 template<class T>
-int LL<T>::GetSize() {}
+void LL<T>::RemoveAt(const T& keyVal) {
+    Node<T>* curr = m_head;
+    Node<T>* prev = m_head;
 
+    while (curr != nullptr) {
+        T currFirst = curr->GetData().first;
+
+        if (currFirst == keyVal) {
+
+            // if the keyval is at m_head
+            if (curr == m_head) {
+                curr = curr->GetNext();
+                m_head = curr;
+                prev = nullptr;
+                delete prev;
+            }
+            else {
+                prev->SetNext(curr->GetNext());
+                delete curr;
+                curr->SetNext(nullptr);
+            }
+        }
+        else {
+            prev = curr;
+            curr = curr->GetNext();
+        }
+    
+    }
+}
+
+template<class T>
+void LL<T>::Display() {
+    Node<T>* curr = m_head;
+    T first;
+    int second;
+    while (curr != nullptr) {
+        first = curr->GetData().first;
+        second = curr->GetData().second;
+        cout << first << ": " << second;
+        curr = curr->GetNext();
+    }
+}
+
+template<class T>
+int LL<T>::GetSize() { return m_size; }
+
+// Name: operator<< (Overloaded << operator)
+    // Desc: Returns the ostream of the data in each node
+    // Preconditions: Requires a LL
+    // Postconditions: Returns an ostream with the data from each node on different line
 template<class U>
-ostream& operator<<(ostream& output, const LL<U>&) {}
+ostream& operator<<(ostream& output, const LL<U>& source) {
+    Node<U>* curr = source.m_head;
+    while (curr != nullptr) {
+        output << curr->GetData().first << ": " << curr->GetData().second << endl;
+        curr = curr->GetNext();
+    }
+    return output;
+}
 
+// Name: Overloaded [] operator
+    // Desc: When passed an integer, returns the data at that location
+    // Precondition: Existing LL
+    // Postcondition: Returns pair from LL using []
 template<class T>
-pair<T, int>& LL<T>::operator[] (int x) {}
+pair<T, int>& LL<T>::operator[] (int x) {
+    int num = 0;
+    Node<T>* curr = m_head;
+    while (curr != nullptr) {
+        if (num == x) {
+            return curr->GetData();
+        }
+        curr = curr->GetNext();
+        num++;
+    }
+    return;
+}
 
 
 
@@ -185,7 +409,7 @@ pair<T, int>& LL<T>::operator[] (int x) {}
 //   2.  make LL
 //   3.  ./LL (try valgrind too!)
 
-/*
+
 int main () {
   //Test 1 - Default Constructor and Push
   cout << "Test 1 - Default Constructor and Push Running" << endl;
@@ -241,6 +465,6 @@ int main () {
 
   return 0;
 }
-*/
+
 
 
