@@ -157,6 +157,7 @@ LL<T>::~LL() {
 template<class T>
 LL<T>::LL(const LL& source) {
     m_size = source.m_size;
+    m_head = nullptr;
     Node<T>* currSource = source.m_head;
     Node<T>* currCpy = m_head;
     if (currSource != nullptr) {
@@ -306,8 +307,8 @@ template<class T>
 void LL<T>::RemoveAt(const T& keyVal) {
     Node<T>* curr = m_head;
     Node<T>* prev = m_head;
-
-    while (curr != nullptr) {
+    bool isRemoved = false;
+    while (curr != nullptr && !isRemoved) {
         T currFirst = curr->GetData().first;
 
         if (currFirst == keyVal) {
@@ -316,14 +317,15 @@ void LL<T>::RemoveAt(const T& keyVal) {
             if (curr == m_head) {
                 curr = curr->GetNext();
                 m_head = curr;
-                prev = nullptr;
+                prev->SetNext(nullptr);
                 delete prev;
             }
             else {
                 prev->SetNext(curr->GetNext());
-                delete curr;
                 curr->SetNext(nullptr);
+                delete curr;
             }
+            isRemoved = true;
         }
         else {
             prev = curr;
@@ -416,7 +418,7 @@ int main() {
     newLL1->Insert("elephants");
     newLL1->Insert("barf");
     newLL1->Display();
-    /*
+    
     //  delete newLL1;
 
     //Test 2 - Copy Constructor and Assignment Operator
@@ -427,17 +429,20 @@ int main() {
     newLL1->Display();
     cout << "*******Copy*********" << endl;
     newLL2->Display();
-    */
-    /*
+    
+    
     //Test Overloaded Assignment Operator
     LL <string>* newLL3 = new LL<string>();
     *newLL3 = *newLL1;
     cout << "*******Assignment*********" << endl;
     newLL3->Insert("barf");
+    cout << "*********newLL1***********" << endl;
     newLL1->Display();
+    cout << "*********newLL3***********" << endl;
+    cout << "newLL3->Insert(\"barf\")" << endl;
     newLL3->Display();
     cout << endl;
-    */
+    
     
     // last test
     //Test 3 - Test Display and Overloaded <<
