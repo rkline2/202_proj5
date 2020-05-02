@@ -141,9 +141,11 @@ LL<T>::LL() {
 template<class T>
 LL<T>::~LL() {
     Node<T>* curr = m_head;
+    m_size = 0;
     while (curr != nullptr) {
         Node<T>* next = curr->GetNext();
         delete curr;
+        curr = nullptr;
         curr = next;
     }
 }
@@ -163,7 +165,7 @@ LL<T>::LL(const LL& source) {
     if (currSource != nullptr) {
         currCpy = new Node<T>(currSource->GetData().first);
         currCpy->SetData(currSource->GetData());
-        
+
         currSource = currSource->GetNext();
 
         while (currSource != nullptr) {
@@ -196,7 +198,7 @@ LL<T>& LL<T>::operator=(const LL& source) {
         m_size = source.m_size;
         Node<T>* currSource = source.m_head;
         Node<T>* currCpy;
-               
+
         if (currSource != nullptr) {
             m_head = new Node<T>(currSource->GetData().first);
             m_head->SetData(currSource->GetData());
@@ -208,7 +210,7 @@ LL<T>& LL<T>::operator=(const LL& source) {
                 Node<T>* temp = new Node<T>(currSource->GetData().first);
                 temp->SetData(currSource->GetData());
                 currCpy->SetNext(temp);
-                
+
                 // moves to the next node 
                 currCpy = currCpy->GetNext();
                 currSource = currSource->GetNext();
@@ -228,14 +230,37 @@ LL<T>& LL<T>::operator=(const LL& source) {
     // Preconditions: LL Populated
     // Postconditions: Returns nullptr if not found OR Node pointer if found
 template<class T>
-Node<T>* LL<T>::Find(const T& newNode) {
+Node<T>* LL<T>::Find(const T& val) {
     Node<T>* curr = m_head;
-    while (curr != nullptr) {
-        if (curr->GetData().first == newNode) {
+    T currVal;
+    int low = 0;
+    int high = GetSize() - 1;
+    int mid = 0;
+    // binary search
+    /************************/
+    if (m_size == 0) {
+        return nullptr;
+    }
+    while (low <= high && curr != nullptr) {
+        mid = (low + high) / 2;
+        // find the mid node
+        for (unsigned int num = 0; num < mid; num++) {
+            curr = curr->GetNext();
+        }
+        currVal = curr->GetData().first;
+        if (currVal == val) {
             return curr;
         }
-        curr = curr->GetNext();
+        else if (val > currVal) {
+            low = mid + 1;
+            
+        }
+        else {
+            high = mid - 1;
+        }
+        curr = m_head;
     }
+    /**********************/
     return nullptr;
 }
 
@@ -251,6 +276,7 @@ void LL<T>::Insert(const T& key) {
     if (m_size == 0) {
         getNode = new Node<T>(key);
         m_head = getNode;
+        m_size++;
     }
     // See if you can find the node in the list
     // If it is already in the list, increment the quantity 
@@ -299,39 +325,60 @@ void LL<T>::Insert(const T& key) {
         if (!isFound) {
             prev->SetNext(getNode);
         }
+        m_size++;
     }
-    m_size++;
+
 }
 
 template<class T>
 void LL<T>::RemoveAt(const T& keyVal) {
     Node<T>* curr = m_head;
     Node<T>* prev = m_head;
-    bool isRemoved = false;
-    while (curr != nullptr && !isRemoved) {
-        T currFirst = curr->GetData().first;
-
-        if (currFirst == keyVal) {
-
-            // if the keyval is at m_head
-            if (curr == m_head) {
-                curr = curr->GetNext();
-                m_head = curr;
-                prev->SetNext(nullptr);
-                delete prev;
-            }
-            else {
-                prev->SetNext(curr->GetNext());
-                curr->SetNext(nullptr);
-                delete curr;
-            }
-            isRemoved = true;
-        }
-        else {
+    bool isFound = false;
+    // binary search
+    /***********************/
+    T currVal;
+    int low = 0;
+    int high = GetSize() - 1;
+    int mid = 0;
+    while (low <= high && curr != nullptr && !isFound) {
+        mid = (low + high) / 2;
+        // find the mid node
+        for (unsigned int num = 0; num < mid; num++) {
             prev = curr;
             curr = curr->GetNext();
         }
+        currVal = curr->GetData().first;
 
+        // if node found
+        if (currVal == keyVal) {
+            isFound = true;
+        }
+        else if (keyVal > currVal) {
+            low = mid + 1;
+        }
+        else {
+            high = mid - 1;
+        }
+        if (!isFound) {
+            curr = m_head;
+            prev = m_head;
+        }
+        
+    }
+    /***********************/
+    // if the keyval is at m_head
+    if (curr == m_head && isFound) {
+        curr = curr->GetNext();
+        m_head = curr;
+        prev->SetNext(nullptr);
+        delete prev;
+    }
+    // if the node is found 
+    else if (isFound){
+        prev->SetNext(curr->GetNext());
+        curr->SetNext(nullptr);
+        delete curr;
     }
 }
 
@@ -340,6 +387,7 @@ void LL<T>::Display() {
     Node<T>* curr = m_head;
     T first;
     int second;
+    
     while (curr != nullptr) {
         first = curr->GetData().first;
         second = curr->GetData().second;
@@ -370,7 +418,7 @@ ostream& operator<<(ostream& output, const LL<U>& source) {
     // Precondition: Existing LL
     // Postcondition: Returns pair from LL using []
 template<class T>
-pair<T, int>& LL<T>::operator[] (int x) {
+pair<T, int>& LL<T>::operator[] (int x) { 
     int num = 0;
     Node<T>* curr = m_head;
     while (curr != nullptr) {
@@ -380,84 +428,70 @@ pair<T, int>& LL<T>::operator[] (int x) {
         curr = curr->GetNext();
         num++;
     }
-    return;
+    return curr->GetData();
 }
-
-
-
-
-
-
 //****************************************************************
+
+
 // To test just LL follow these instructions:
 //   1.  Uncomment out int main below
 //   2.  make LL
 //   3.  ./LL (try valgrind too!)
 
 
-int main() {
-    //Test 1 - Default Constructor and Push
-    cout << "Test 1 - Default Constructor and Push Running" << endl;
-    //Test Default Constructor
-    LL <string>* newLL1 = new LL<string>();
-    //Push 4 nodes into LL
-    newLL1->Insert("candy");
-    newLL1->Insert("cookies");
-    newLL1->Insert("candy");
-    newLL1->Insert("bananas");
-    newLL1->Insert("dogs");
-    newLL1->Insert("apples");
-    newLL1->Insert("elephants");
-    newLL1->Insert("barf");
-    newLL1->Insert("candy");
-    newLL1->Insert("cookies");
-    newLL1->Insert("candy");
-    newLL1->Insert("bananas");
-    newLL1->Insert("dogs");
-    newLL1->Insert("apples");
-    newLL1->Insert("elephants");
-    newLL1->Insert("barf");
-    newLL1->Display();
-    
-    //  delete newLL1;
+/*
+int main () {
+  //Test 1 - Default Constructor and Push
+  cout << "Test 1 - Default Constructor and Push Running" << endl;
+  //Test Default Constructor
+  LL <string>* newLL1 = new LL<string>();
+  //Push 4 nodes into LL
+  newLL1->Insert("candy");
+  newLL1->Insert("cookies");
+  newLL1->Insert("candy");
+  newLL1->Insert("bananas");
+  newLL1->Insert("dogs");
+  newLL1->Insert("apples");
+  newLL1->Insert("elephants");
+  newLL1->Insert("barf");
+  newLL1->Insert("candy");
+  newLL1->Insert("cookies");
+  newLL1->Insert("candy");
+  newLL1->Insert("bananas");
+  newLL1->Insert("dogs");
+  newLL1->Insert("apples");
+  newLL1->Insert("elephants");
+  newLL1->Insert("barf");
+  newLL1->Display();
+  //  delete newLL1;
+  //Test 2 - Copy Constructor and Assignment Operator
+  cout << "Test 2 - Copy Constructor and Assignment Operator Running" << endl;
+  //Test Copy constructor
+  LL <string>* newLL2 = new LL<string>(*newLL1);
+  cout << "*******Original*********" << endl;
+  newLL1->Display();
+  cout << "*******Copy*********" << endl;
+  newLL2->Display();
 
-    //Test 2 - Copy Constructor and Assignment Operator
-    cout << "Test 2 - Copy Constructor and Assignment Operator Running" << endl;
-    //Test Copy constructor
-    LL <string>* newLL2 = new LL<string>(*newLL1);
-    cout << "*******Original*********" << endl;
-    newLL1->Display();
-    cout << "*******Copy*********" << endl;
-    newLL2->Display();
-    
-    
-    //Test Overloaded Assignment Operator
-    LL <string>* newLL3 = new LL<string>();
-    *newLL3 = *newLL1;
-    cout << "*******Assignment*********" << endl;
-    newLL3->Insert("barf");
-    cout << "*********newLL1***********" << endl;
-    newLL1->Display();
-    cout << "*********newLL3***********" << endl;
-    cout << "newLL3->Insert(\"barf\")" << endl;
-    newLL3->Display();
-    cout << endl;
-    
-    
-    // last test
-    //Test 3 - Test Display and Overloaded <<
-    cout << "Test 3 - Display and Overloaded << Running" << endl;
-    cout << "newLL1 Display Function" << endl;
-    newLL1->Display();
-    cout << "newLL1 Overloaded" << endl;
-    cout << *newLL1;
-    cout << "RemoveAt(candy)" << endl;
-    newLL1->RemoveAt("candy");
-    cout << "newLL1 Display Function" << endl;
-    newLL1->Display();
-    
-    return 0;
+  //Test Overloaded Assignment Operator
+  LL <string>* newLL3 = new LL<string>();
+  newLL3 = newLL1;
+  cout << "*******Assignment*********" << endl;
+  newLL3->Display();
+  cout << endl;
+  //Test 3 - Test Display and Overloaded <<
+  cout << "Test 3 - Display and Overloaded << Running" << endl;
+  cout << "newLL1 Display Function" << endl;
+  newLL1->Display();
+  cout << "newLL1 Overloaded" << endl;
+  cout << *newLL1;
+  cout << "RemoveAt(candy)" << endl;
+  newLL1->RemoveAt("candy");
+  cout << "newLL1 Display Function" << endl;
+  newLL1->Display();
+  return 0;
 }
+*/
 
 
 
