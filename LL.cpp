@@ -253,7 +253,7 @@ Node<T>* LL<T>::Find(const T& val) {
         }
         else if (val > currVal) {
             low = mid + 1;
-            
+
         }
         else {
             high = mid - 1;
@@ -364,7 +364,7 @@ void LL<T>::RemoveAt(const T& keyVal) {
             curr = m_head;
             prev = m_head;
         }
-        
+
     }
     /***********************/
     // if the keyval is at m_head
@@ -373,12 +373,14 @@ void LL<T>::RemoveAt(const T& keyVal) {
         m_head = curr;
         prev->SetNext(nullptr);
         delete prev;
+        m_size--;
     }
     // if the node is found 
-    else if (isFound){
+    else if (isFound) {
         prev->SetNext(curr->GetNext());
         curr->SetNext(nullptr);
         delete curr;
+        m_size--;
     }
 }
 
@@ -387,7 +389,7 @@ void LL<T>::Display() {
     Node<T>* curr = m_head;
     T first;
     int second;
-    
+
     while (curr != nullptr) {
         first = curr->GetData().first;
         second = curr->GetData().second;
@@ -418,7 +420,7 @@ ostream& operator<<(ostream& output, const LL<U>& source) {
     // Precondition: Existing LL
     // Postcondition: Returns pair from LL using []
 template<class T>
-pair<T, int>& LL<T>::operator[] (int x) { 
+pair<T, int>& LL<T>::operator[] (int x) {
     int num = 0;
     Node<T>* curr = m_head;
     while (curr != nullptr) {
