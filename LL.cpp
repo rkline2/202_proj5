@@ -396,6 +396,8 @@ void LL<T>::Display() {
         cout << first << ": " << second << endl;
         curr = curr->GetNext();
     }
+    cout << "END" << endl;
+
 }
 
 template<class T>
@@ -412,6 +414,7 @@ ostream& operator<<(ostream& output, const LL<U>& source) {
         output << curr->GetData().first << ": " << curr->GetData().second << endl;
         curr = curr->GetNext();
     }
+    output << "END" << endl;
     return output;
 }
 
@@ -430,7 +433,8 @@ pair<T, int>& LL<T>::operator[] (int x) {
         curr = curr->GetNext();
         num++;
     }
-    return curr->GetData();
+    // if the node is not found
+    //return make_pair(NULL, NULL);
 }
 //****************************************************************
 
