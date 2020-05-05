@@ -393,7 +393,7 @@ void LL<T>::Display() {
     while (curr != nullptr) {
         first = curr->GetData().first;
         second = curr->GetData().second;
-        cout << first << ": " << second << endl;
+        cout << first << ":" << second << endl;
         curr = curr->GetNext();
     }
     cout << "END" << endl;
@@ -411,7 +411,7 @@ template<class U>
 ostream& operator<<(ostream& output, const LL<U>& source) {
     Node<U>* curr = source.m_head;
     while (curr != nullptr) {
-        output << curr->GetData().first << ": " << curr->GetData().second << endl;
+        output << curr->GetData().first << ":" << curr->GetData().second << endl;
         curr = curr->GetNext();
     }
     output << "END" << endl;
