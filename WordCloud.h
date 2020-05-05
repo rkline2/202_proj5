@@ -10,18 +10,12 @@
 using namespace std;
 
 //Constants (You may add additional)
-const int MAX_LOW_C_VAL = 122;  // <-|
-const int MIN_LOW_C_VAL = 97;   //   | 
-const int MAX_UP_C_VAL = 90;    //   | Ascii identifiers 
-const int MIN_UP_C_VAL = 65;    //   |
-const int MIN_NUM = 48;         //   |
-const int MAX_NUM = 57;         // <-|
+enum LINE_FORMAT : const char {
+    SEPARATOR = ':', NEWLINE = '\n', NEWWORD = ' '  // specific character identifiers 
+};
 
-const char SEPARATOR = ':';
-const char NEWLINE = '\n';
+const string SIN_YES = "y", FULL_YES = "yes", SIN_NO = "n", FULL_NO = "no"; // user responses 
 
-const string SIN_YES = "y";
-const string FULL_YES = "yes";
 //Common words to be removed from output
 const vector<string> EXCLUDE_LIST{ "a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "aren't", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "can", "can't", "cannot", "com", "could", "couldn't", "did", "didn't", "do", "does", "doesn't", "doing", "don't", "down", "during", "each", "else", "ever", "few", "for", "from", "further", "get", "had", "hadn't", "has", "hasn't", "have", "haven't", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "http", "i", "i'd", "i'll", "i'm", "i've", "I", "I'd", "I'll", "I'm", "I've", "if", "in", "into", "is", "isn't", "it", "it's", "its", "itself", "just", "k", "let's", "like", "me", "more", "most", "mustn't", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "r", "same", "shall", "shan't", "she", "she'd", "she'll", "she's", "should", "shouldn't", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "wasn't", "we", "we'd", "we'll", "we're", "we've", "were", "weren't", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "won't", "would", "wouldn't", "www", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves" };
 
@@ -80,8 +74,6 @@ public:
     // Postconditions: None
     void Start();
 
-    // REMOVE WHEN FINISHED!!
-    void test(string);
 private:
     string m_fileName; //Name of the input file
     LL<string>* m_cloud; //LL to store all data
