@@ -93,7 +93,6 @@ void WordCloud::RemovePunct(string& word) {
     // Removes all common words after they are read
 void WordCloud::RemoveCommon() {
     pair<string, int> curr_CloudVal;
-    int currSize = m_cloud->GetSize();
 
     for (unsigned int i = 0; i < m_cloud->GetSize(); i++) {
         curr_CloudVal = m_cloud->operator[](i);     
