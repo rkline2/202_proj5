@@ -249,7 +249,7 @@ Node<T>* LL<T>::Find(const T& val) {
     T currVal;
     int low = 0;
     int high = GetSize() - 1;
-    int mid = 0;
+    unsigned int mid = 0;
     // binary search
     /************************/
     if (m_size == 0) {
@@ -360,7 +360,7 @@ void LL<T>::RemoveAt(const T& keyVal) {
     T currVal;
     int low = 0;
     int high = GetSize() - 1;
-    int mid = 0;
+    unsigned int mid = 0;
     while (low <= high && curr != nullptr && !isFound) {
         mid = (low + high) / 2;
         // find the mid node
