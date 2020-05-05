@@ -215,9 +215,7 @@ void WordCloud::Export() {
 void WordCloud::Start() {
     string usrResponse;
     LoadFile();
-    cout << *m_cloud << endl;
     RemoveCommon();
-    cout << *m_cloud << endl;
     
     cout << "Would you like to remove all words with a frequency of 1?" << endl;
     cin >> usrResponse;
