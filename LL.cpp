@@ -1,3 +1,20 @@
+/*****************************************
+** File:    LL.cpp
+** Project: CMSC 202 Project 5, Spring 2020
+** Author:  Rooklyn Kline
+** Date:    5/07/20
+** Section: 02
+** E-mail:  rkline2@umbc.edu
+**
+** This file contains the templated LL and Node classes. 
+** The file involves creating and manipulating nodes in a linked
+** list. The nodes hold a pair of (T, int). The T can 
+** represent any data type (although this program will only use strings). 
+** The primary functions are to insert, remove, and
+** format nodes in a link list based on a given message from
+** a .txt file.
+**
+***********************************************/
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -132,12 +149,16 @@ private:
 //*****************************************************************
 //Implement LL here
 
+// LL (Linked List) - Default Constructor
+    // Creates a new linked list where m_head points to nullptr
 template<class T>
 LL<T>::LL() {
     m_head = nullptr;
     m_size = 0;
 }
 
+// ~LL() - Destructor
+    // A LL is deallocated 
 template<class T>
 LL<T>::~LL() {
     Node<T>* curr = m_head;
@@ -150,12 +171,8 @@ LL<T>::~LL() {
     }
 }
 
-
-// Name: LL (Copy Constructor)
-    // Desc: Creates a copy of existing LL
-    //       Requires a LL - REQUIRED to be implemented even if not used
-    // Preconditions: Source LL exists
-    // Postconditions: Copy of source LL
+// LL (Copy Constructor)
+    // Given a LL, creates a copy of existing LL
 template<class T>
 LL<T>::LL(const LL& source) {
     m_size = source.m_size;
@@ -187,11 +204,9 @@ LL<T>::LL(const LL& source) {
 
 }
 
-// Name: operator= (Overloaded Assignment Operator)
-    // Desc: Makes two LL of the same type have identical number of nodes and values
-    // Preconditions: Requires two linked lists of the same templated type
-    //                REQUIRED to be implemented even if not used
-    // Postconditions: Two idenetical LL
+// operator= (Overloaded Assignment Operator)
+    // Given a LL, makes two LL of the same type have 
+    // identical number of nodes and values
 template<class T>
 LL<T>& LL<T>::operator=(const LL& source) {
     if (this != &source) {
@@ -225,10 +240,9 @@ LL<T>& LL<T>::operator=(const LL& source) {
     return *this;
 }
 
-// Name: Find
-    // Desc: Iterates through LL and returns node if data found
-    // Preconditions: LL Populated
-    // Postconditions: Returns nullptr if not found OR Node pointer if found
+// Find
+    // Given a T value (key), returns nullptr
+    // if not found OR Node pointer if found
 template<class T>
 Node<T>* LL<T>::Find(const T& val) {
     Node<T>* curr = m_head;
@@ -264,6 +278,9 @@ Node<T>* LL<T>::Find(const T& val) {
     return nullptr;
 }
 
+// Insert
+    // Given a T value (key), node is inserted in LL 
+    // based on first value (or quantity incremented)
 template<class T>
 void LL<T>::Insert(const T& key) {
     Node<T>* getNode = Find(key);
@@ -330,6 +347,9 @@ void LL<T>::Insert(const T& key) {
 
 }
 
+// RemoveAt 
+    // Given a T value (key), removes first 
+    // node with passed value (in first)
 template<class T>
 void LL<T>::RemoveAt(const T& keyVal) {
     Node<T>* curr = m_head;
@@ -384,6 +404,8 @@ void LL<T>::RemoveAt(const T& keyVal) {
     }
 }
 
+// Display
+    // Displays the pair in each node of LL 
 template<class T>
 void LL<T>::Display() {
     Node<T>* curr = m_head;
@@ -400,13 +422,14 @@ void LL<T>::Display() {
 
 }
 
+// GetSize
+    // Returns m_size
 template<class T>
 int LL<T>::GetSize() { return m_size; }
 
-// Name: operator<< (Overloaded << operator)
-    // Desc: Returns the ostream of the data in each node
-    // Preconditions: Requires a LL
-    // Postconditions: Returns an ostream with the data from each node on different line
+// operator<< (Overloaded << operator)
+    // Given a LL, returns an ostream with 
+    // the data from each node on different line
 template<class U>
 ostream& operator<<(ostream& output, const LL<U>& source) {
     Node<U>* curr = source.m_head;
@@ -418,10 +441,8 @@ ostream& operator<<(ostream& output, const LL<U>& source) {
     return output;
 }
 
-// Name: Overloaded [] operator
-    // Desc: When passed an integer, returns the data at that location
-    // Precondition: Existing LL
-    // Postcondition: Returns pair from LL using []
+// Overloaded [] operator
+    // Given an integer, returns pair from LL using []
 template<class T>
 pair<T, int>& LL<T>::operator[] (int x) {
     int num = 0;
@@ -433,8 +454,6 @@ pair<T, int>& LL<T>::operator[] (int x) {
         curr = curr->GetNext();
         num++;
     }
-    // if the node is not found
-    //return make_pair(NULL, NULL);
 }
 //****************************************************************
 
