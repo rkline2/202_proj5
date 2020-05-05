@@ -36,10 +36,30 @@ WordCloud::~WordCloud() { m_fileName.clear(); delete m_cloud; }
 void WordCloud::LoadFile() {
     ifstream file;
     file.open(m_fileName);
-    string word;
-    while (getline(file, word, ' ')) {
-        RemovePunct(word);
-        m_cloud->Insert(word);
+    string line = "";
+    string word = "";
+    while (getline(file, line)) {
+        for (string::iterator curr_char = line.begin(); curr_char != line.end(); ++curr_char) {
+            if (*curr_char != ' ') {
+                // lowercase each char 
+                if (!ispunct(*curr_char)) {
+                    *curr_char = tolower(*curr_char);
+                }
+                word += *curr_char;  
+            }
+            else {   
+                RemovePunct(word);
+                m_cloud->Insert(word);
+                word = "";
+            }
+        }
+        // last word in the line 
+        if (word != "") {
+            RemovePunct(word);
+            m_cloud->Insert(word);
+            word = "";
+        }
+        
     }
     file.close();
 }
@@ -54,21 +74,14 @@ void WordCloud::LoadFile() {
 void WordCloud::RemovePunct(string& word) {
     int topIndex = word.length() - 1;
     int lowIndex = 0;
-    int midIndex = topIndex / 2;
     char topChar = word[topIndex];
     char lowChar = word[lowIndex];
-    bool isLower = false;
-    // lowercase the word
-    for (string::iterator currChar = word.begin(); currChar != word.end(); ++currChar) {
-        if (!ispunct(*currChar)) {
-            *currChar = tolower(*currChar);
-        }
-    }
+    
     /*
     while (!isLower) {
         topChar = word[topIndex];
         lowChar = word[lowIndex];
-        
+
         if ((topChar <= MAX_UP_C_VAL) && (topChar >= MIN_UP_C_VAL)) {
             topChar = tolower(topChar);
         }
@@ -88,18 +101,18 @@ void WordCloud::RemovePunct(string& word) {
             topIndex--;
             lowIndex++;
         }
-        
+
     }
     */
 
     // checks for punctuation
-    
+
     // letters or numbers for topChar
-    if (ispunct(topChar)) { word.erase(word.end()); }
+    if (ispunct(topChar)) { word.erase(topIndex); }
 
     // letters or numbers for lowChar
-    if (ispunct(lowChar)) { word.erase(0); }
- 
+    if (ispunct(lowChar)) { word.erase(lowIndex, lowIndex + 1); }
+
 }
 
 // Name: RemoveCommon
@@ -115,6 +128,7 @@ void WordCloud::RemoveCommon() {
     int mid;
     bool isFound;
     */
+    int currSize = m_cloud->GetSize();
     for (unsigned int i = 0; i < m_cloud->GetSize(); i++) {
         curr_CloudVal = m_cloud->operator[](i);
         /*
@@ -122,9 +136,11 @@ void WordCloud::RemoveCommon() {
         high = EXCLUDE_LIST.size() - 1;
         isFound = false;
         */
+        
         for (vector<string>::const_iterator excludeVal = EXCLUDE_LIST.begin(); excludeVal != EXCLUDE_LIST.end(); ++excludeVal) {
             if (curr_CloudVal.first == *excludeVal) {
                 m_cloud->RemoveAt(*excludeVal);
+                i--;
             }
         }
         // binary search
@@ -150,7 +166,7 @@ void WordCloud::RemoveCommon() {
         */
         /**********************/
     }
-    
+
 }
 
 // Name: RemoveSingles
@@ -167,6 +183,7 @@ void WordCloud::RemoveSingles() {
         if (freq == 1) {
             curr->RemoveAt(key);
             numRemoved++;
+            i--;
         }
     }
     cout << numRemoved << " words removed" << endl;
@@ -198,8 +215,10 @@ void WordCloud::Export() {
 void WordCloud::Start() {
     string usrResponse;
     LoadFile();
+    cout << *m_cloud << endl;
     RemoveCommon();
-
+    cout << *m_cloud << endl;
+    
     cout << "Would you like to remove all words with a frequency of 1?" << endl;
     cin >> usrResponse;
     RemovePunct(usrResponse);
