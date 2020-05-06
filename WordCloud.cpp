@@ -93,13 +93,16 @@ void WordCloud::RemovePunct(string& word) {
     // Removes all common words after they are read
 void WordCloud::RemoveCommon() {
     pair<string, int> curr_CloudVal;
+    int currSize = m_cloud->GetSize();
 
     for (unsigned int i = 0; i < m_cloud->GetSize(); i++) {
-        curr_CloudVal = m_cloud->operator[](i);     
-        for (vector<string>::const_iterator excludeVal = EXCLUDE_LIST.begin(); excludeVal != EXCLUDE_LIST.end(); ++excludeVal) {
-            if (curr_CloudVal.first == *excludeVal) {
-                m_cloud->RemoveAt(*excludeVal);
-                i--;
+        if (m_cloud->operator[](i).first != NOTFOUND) {
+            curr_CloudVal = m_cloud->operator[](i);
+            for (vector<string>::const_iterator excludeVal = EXCLUDE_LIST.begin(); excludeVal != EXCLUDE_LIST.end(); ++excludeVal) {
+                if (curr_CloudVal.first == *excludeVal) {
+                    m_cloud->RemoveAt(*excludeVal);
+                    i--;
+                }
             }
         }
 
@@ -113,12 +116,14 @@ void WordCloud::RemoveSingles() {
     LL<string>* curr = m_cloud;
     int numRemoved = 0;
     for (int i = 0; i < curr->GetSize(); i++) {
-        string key = curr->operator[](i).first;
-        int freq = curr->operator[](i).second;
-        if (freq == 1) {
-            curr->RemoveAt(key);
-            numRemoved++;
-            i--;
+        if (m_cloud->operator[](i).first != NOTFOUND) {
+            string key = curr->operator[](i).first;
+            int freq = curr->operator[](i).second;
+            if (freq == 1) {
+                curr->RemoveAt(key);
+                numRemoved++;
+                i--;
+            }
         }
     }
     cout << numRemoved << " words removed" << endl;
@@ -133,8 +138,10 @@ void WordCloud::Export() {
 
     ofstream newFile(filename);
     for (unsigned int i = 0; i != m_cloud->GetSize(); i++) {
-        newFile << m_cloud->operator[](i).first << SEPARATOR
-            << m_cloud->operator[](i).second << '\n';
+        if (m_cloud->operator[](i).first != NOTFOUND) {
+            newFile << m_cloud->operator[](i).first << SEPARATOR
+                << m_cloud->operator[](i).second << NEWLINE;
+        }
     }
     newFile.close();
     cout << "Output to exportFile: " << filename << endl;
