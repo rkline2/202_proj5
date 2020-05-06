@@ -180,4 +180,3 @@ void WordCloud::Start() {
     Export();
     
 }
-
