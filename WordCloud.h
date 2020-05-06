@@ -12,7 +12,6 @@ using namespace std;
 //Constants (You may add additional)
 const char SEPARATOR = ':', NEWLINE = '\n', NEWWORD = ' ';  // specific character identifiers 
 
-
 const string SIN_YES = "y", FULL_YES = "yes", SIN_NO = "n", FULL_NO = "no"; // user responses 
 
 const string NO_VAL = "NULL"; // no value found
