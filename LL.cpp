@@ -6,10 +6,10 @@
 ** Section: 02
 ** E-mail:  rkline2@umbc.edu
 **
-** This file contains the templated LL and Node classes. 
+** This file contains the templated LL and Node classes.
 ** The file involves creating and manipulating nodes in a linked
-** list. The nodes hold a pair of (T, int). The T can 
-** represent any data type (although this program will only use strings). 
+** list. The nodes hold a pair of (T, int). The T can
+** represent any data type (although this program will only use strings).
 ** The primary functions are to insert, remove, and
 ** format nodes in a link list based on a given message from
 ** a .txt file.
@@ -20,6 +20,8 @@
 #include <iomanip>
 #include <cmath>
 using namespace std;
+
+const string NOTFOUND = "null";
 
 // Templated Node class
 // Normal node except that each node can hold a pair <T,int>
