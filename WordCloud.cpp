@@ -6,9 +6,9 @@
 ** Section: 02
 ** E-mail:  rkline2@umbc.edu
 **
-** This file involves inserting and manipulating a linked 
+** This file involves inserting and manipulating a linked
 ** list. The primary functions are to insert, and
-** format a link list based on a given message from 
+** format a link list based on a given message from
 ** a .txt file.
 **
 ***********************************************/
@@ -52,9 +52,9 @@ void WordCloud::LoadFile() {
                 if (!ispunct(*curr_char)) {
                     *curr_char = tolower(*curr_char);
                 }
-                word += *curr_char;  
+                word += *curr_char;
             }
-            else {   
+            else {
                 RemovePunct(word);
                 m_cloud->Insert(word);
                 word = "";
@@ -66,7 +66,7 @@ void WordCloud::LoadFile() {
             m_cloud->Insert(word);
             word = "";
         }
-        
+
     }
     file.close();
 }
@@ -78,7 +78,7 @@ void WordCloud::RemovePunct(string& word) {
     int lowIndex = 0;
     char topChar = word[topIndex];
     char lowChar = word[lowIndex];
-    
+
     // checks for punctuation
 
     // letters or numbers for topChar
@@ -131,9 +131,43 @@ void WordCloud::RemoveSingles() {
 // Export
     // New export file is created with "data:frequency" one on each line
 void WordCloud::Export() {
+    const string ISTXT = ".txt"; // .txt exists
+    const int START_PNT = 4; // starts at the third to last char
     string filename = "*.txt";
+    string last_Three = "";
     cout << "What would you like to call the export file?" << endl;
     cin >> filename;
+
+    // checks if a .txt exists in the file name 
+    for (string::iterator it = filename.end() - START_PNT; it != filename.end(); ++it) {
+        last_Three += *it;
+    }
+
+    // asks if you want a .txt if there is no .txt
+    if (last_Three != ISTXT) {
+        string usrResponse = "";
+        string lower_c_Response = "";
+
+        while (usrResponse != SIN_YES && usrResponse != FULL_YES && usrResponse != SIN_NO && usrResponse != FULL_NO) {
+            cout << "Do you want a \".txt\" at the end of " << "\"" << filename <<"\"" << "? "<< "(\"y\", \"yes\", \"n\", \"no\")" << endl;
+            cin >> usrResponse;
+
+            // lowercase each char in the word
+            for (string::iterator it = usrResponse.begin(); it != usrResponse.end(); ++it) {
+                if (*it != NEWWORD) {
+                    if (!ispunct(*it)) {
+                        *it = tolower(*it);
+                    }
+                    lower_c_Response += *it;
+                }
+            }
+        }
+        usrResponse = lower_c_Response;
+
+        if (usrResponse == SIN_YES || usrResponse == FULL_YES) {
+            filename += ISTXT;
+        }
+    }
 
     ofstream newFile(filename);
     for (unsigned int i = 0; i != m_cloud->GetSize(); i++) {
@@ -169,6 +203,7 @@ void WordCloud::Start() {
             }
         }
     }
+    usrResponse = lower_c_Response;
     if (usrResponse == SIN_YES || usrResponse == FULL_YES) {
         RemoveSingles();
     }
@@ -177,5 +212,5 @@ void WordCloud::Start() {
     }
     cout << *m_cloud << endl;
     Export();
-    
+
 }
