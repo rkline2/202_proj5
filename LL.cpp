@@ -447,6 +447,7 @@ template<class T>
 pair<T, int>& LL<T>::operator[] (int x) {
     int num = 0;
     Node<T>* curr = m_head;
+    pair<T, int> null = make_pair("NULL", 0);
     while (curr != nullptr) {
         if (num == x) {
             return curr->GetData();
@@ -454,6 +455,7 @@ pair<T, int>& LL<T>::operator[] (int x) {
         curr = curr->GetNext();
         num++;
     }
+    return null;
 }
 //****************************************************************
 
