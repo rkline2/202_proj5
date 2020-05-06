@@ -448,8 +448,9 @@ ostream& operator<<(ostream& output, const LL<U>& source) {
 template<class T>
 pair<T, int>& LL<T>::operator[] (int x) {
     int num = 0;
+    const string NO_VAL = "NULL";
     Node<T>* curr = m_head;
-    pair<T, int> null = make_pair("NULL", 0);
+    pair<T, int> null = make_pair(NO_VAL, 0);
     while (curr != nullptr) {
         if (num == x) {
             return curr->GetData();
