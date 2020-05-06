@@ -146,7 +146,6 @@ void WordCloud::Export() {
     // asks if you want a .txt if there is no .txt
     if (last_Three != ISTXT) {
         string usrResponse = "";
-        string lower_c_Response = "";
 
         while (usrResponse != SIN_YES && usrResponse != FULL_YES && usrResponse != SIN_NO && usrResponse != FULL_NO) {
             cout << "Do you want a \".txt\" at the end of " << "\"" << filename <<"\"" << "? "<< "(\"y\", \"yes\", \"n\", \"no\")" << endl;
@@ -158,11 +157,9 @@ void WordCloud::Export() {
                     if (!ispunct(*it)) {
                         *it = tolower(*it);
                     }
-                    lower_c_Response += *it;
                 }
             }
         }
-        usrResponse = lower_c_Response;
 
         if (usrResponse == SIN_YES || usrResponse == FULL_YES) {
             filename += ISTXT;
@@ -186,7 +183,6 @@ void WordCloud::Export() {
     // Calls LoadFile, RemoveCommon, Diplay, and Export 
 void WordCloud::Start() {
     string usrResponse = "";
-    string lower_c_Response = "";
     LoadFile();
     RemoveCommon();
     while (usrResponse != SIN_YES && usrResponse != FULL_YES && usrResponse != SIN_NO && usrResponse != FULL_NO) {
@@ -199,11 +195,10 @@ void WordCloud::Start() {
                 if (!ispunct(*it)) {
                     *it = tolower(*it);
                 }
-                lower_c_Response += *it;
             }
         }
     }
-    usrResponse = lower_c_Response;
+
     if (usrResponse == SIN_YES || usrResponse == FULL_YES) {
         RemoveSingles();
     }
