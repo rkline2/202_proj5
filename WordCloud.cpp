@@ -134,7 +134,7 @@ void WordCloud::Export() {
     ofstream newFile(filename);
     for (unsigned int i = 0; i != m_cloud->GetSize(); i++) {
         newFile << m_cloud->operator[](i).first << SEPARATOR
-            << m_cloud->operator[](i).second << NEWLINE;
+            << m_cloud->operator[](i).second << '\n';
     }
     newFile.close();
     cout << "Output to exportFile: " << filename << endl;
